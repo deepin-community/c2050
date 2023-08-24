@@ -1,0 +1,57 @@
+From 4ecf1da966003c485126e3bce6e18f5f4e795053 Mon Sep 17 00:00:00 2001
+From: Thorsten Alteholz <debian@alteholz.de>
+Date: Tue, 19 Oct 2021 19:10:58 +0000
+Subject: avoid crash
+
+---
+ c2050.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/c2050.c b/c2050.c
+index d2dc23c..d5bf91a 100644
+--- a/c2050.c
++++ b/c2050.c
+@@ -59,14 +59,14 @@ struct tSweepBuffer {
+  */
+ void ClearBuffer(char *data, int bytes)
+ {
+-  register i;
++  register int i;
+   for(i = 0; i < bytes; data[i++] = 0);
+ } /* ClearBuffer */
+ 
+ /* 
+  * Initialize a sweep buffer
+  */
+-SweepBuffer_Init (struct tSweepBuffer *SweepBuffer, int bytesize)
++void SweepBuffer_Init (struct tSweepBuffer *SweepBuffer, int bytesize)
+ {
+   SweepBuffer->bytepos = 0;
+   SweepBuffer->bitpos = 0;
+@@ -143,7 +143,7 @@ int ReduceBytes(char *buffer, int bytespercolumn,
+ void PrintSweep(char *buffer, char *header, int bytesize, int width, int leftmargin, FILE *out)
+ {
+   int bstart;
+-  register i;
++  register int i;
+   /* Remove zeros and set a margin instead. Faster Printing. */
+   bstart = ReduceBytes(buffer, BYTES_PER_COLUMN, &leftmargin,
+ 		       &width, &bytesize);
+@@ -172,7 +172,7 @@ void PrintSweep(char *buffer, char *header, int bytesize, int width, int leftmar
+  */
+ int LineSum(signed char line[], int length)
+ {
+-  register i = 0;
++  register int i = 0;
+   while (i < length)
+     if(line[i++] != 0) return 1;
+   return 0;
+@@ -216,7 +216,7 @@ void LexPrint(FILE *in, FILE *out) {
+   {
+ 
+     /* Get memory and clear it. */
+-    SweepBuffer_Init(&blkbuffer, blkbytesize);
++    SweepBuffer_Init(&blkbuffer, blkbytesize * 2);
+     for (i=0; i<COLOR_BUFFERS; i++) {
+       SweepBuffer_Init(&colbuffer[i], colbytesize);
+       colbuffer[i].bufpos = i;
