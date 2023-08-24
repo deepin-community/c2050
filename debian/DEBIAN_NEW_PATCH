@@ -1,0 +1,13 @@
+This package is managed by git-dpm:
+===================================
+
+add new patch: 
+ git-dpm checkout-patched
+ <change files>
+ git commit -a
+ git-dpm update-patches
+
+
+or (untested):
+ git-dpm apply-patch <patchfile>
+ git-dpm update-patches
